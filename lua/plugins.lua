@@ -24,7 +24,7 @@ require("lazy").setup({
       local configs = require("nvim-treesitter")
 
       configs.setup({
-        ensure_installed = { "javascript", "lua" },
+        ensure_installed = { "javascript", "lua", "html", "djangohtml" },
         sync_install = false,
         highlight = { enable = true },
         indent = { enable = true },
@@ -38,19 +38,47 @@ require("lazy").setup({
       {
         "williamboman/mason-lspconfig.nvim",
         dependencies = { "williamboman/mason.nvim" },
-      }
+      },
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "hrsh7th/nvim-cmp",
     },
     config = function()
+      local cmp = require("cmp")
+      cmp.setup({
+        snippet = {
+          expand = function(args)
+            vim.snippet.expand(args.body)
+          end
+        },
+        mapping = cmp.mapping.preset.insert({
+          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.abort(),
+          ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        }),
+        sources = {
+          { name = "nvim_lsp" }
+        }
+      })
       local lspconfig = require("lspconfig")
       local mason = require("mason")
       local mason_lspconfig = require("mason-lspconfig")
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
       mason.setup()
       mason_lspconfig.setup()
 
-      lspconfig.tsserver.setup({})
+      lspconfig.ts_ls.setup({})
       lspconfig.rust_analyzer.setup({})
       lspconfig.lua_ls.setup({})
+      lspconfig.html.setup({})
+      lspconfig.emmet_language_server.setup({
+        capabilties = capabilities,
+      })
     end
   },
 })
