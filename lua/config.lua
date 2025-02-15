@@ -9,7 +9,7 @@ vim.opt.softtabstop = 2
 
 vim.keymap.set("n", "<leader>fml", "<cmd>CellularAutomaton make_it_rain<CR>")
 
--- vim.cmd("colorscheme rose-pine")
+vim.cmd("colorscheme rose-pine")
 
 -- https://vonheikemen.github.io/devlog/tools/using-netrw-vim-builtin-file-explorer/
 vim.keymap.set("n", "<leader>nn", ":Lexplore %:p:h<CR>")
